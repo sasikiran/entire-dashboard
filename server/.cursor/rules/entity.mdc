@@ -1,0 +1,47 @@
+---
+globs: **/entity/**
+alwaysApply: false
+---
+
+# Entity Development Guidelines
+
+For an example of an Entity class, refer to the `Reop` entity (`src/main/java/com/mzfuture/entire/gitrepo/entity/Reop.java`).
+
+## 1. Basic Requirements
+
+All Entity classes must inherit from `BaseEntity`. The `BaseEntity` already defines several common fields: `id`, `createdAt`, and `updatedAt`.
+
+## 2. Naming Conventions
+
+### 2.1. Class Name and Table Name
+
+* Entity class names must be **singular business nouns**, such as `Reop`.
+* In most cases, `@Table` is not required. The default JPA naming strategy will automatically map the class name to a lowercase table name separated by underscores. For example, the class name `PushReviewLog` will be automatically mapped to `push_review_log`.
+
+### 2.2. Field Names
+
+* Field names must follow Java naming conventions (`lowerCamelCase`).
+* Normally, the `@Column` annotation should not be used. Let JPA automatically map the field names according to the naming strategy.
+
+## 3. Annotation Guidelines
+
+* The `@Builder` annotation is **not allowed** in Entity classes.
+* For enum types, the annotation `@Enumerated(EnumType.STRING)` must be used. Using `ORDINAL` is strictly prohibited.
+* JPA relationship annotations such as `@ManyToOne`, `@OneToMany`, `@OneToOne`, and `@ManyToMany` are **not allowed**.
+* Avoid using `@Table` and `@Column` annotations unless absolutely necessary.
+
+## 4. Commenting Guidelines
+
+* Both class names and field names must include comments.
+
+## 5. Behavioral Guidelines
+
+* Simple domain behaviors are allowed, such as `isActive()` and `getFullName()`.
+* The following behaviors are prohibited:
+  * Business process logic
+  * Calling `Repository`, `Service`, or other external components
+
+## 6. Migration Guidelines
+
+* When creating or modifying an Entity class, a corresponding Migration script must also be created.
+* Migration scripts must follow the [Migration Script Guidelines](migration.mdc).

@@ -1,0 +1,65 @@
+---
+globs: *.java
+alwaysApply: false
+---
+
+# Java Comment Style
+
+## Scope
+All `.java` files.
+
+## Rules
+
+1. Single-line comments must use `//`.
+
+2. Documentation or multi-line comments must use `///`.
+
+3. Do NOT use traditional Javadoc block comments (`/** ... */`).
+
+4. Each line of a documentation comment must start with `///`.
+
+5. Comments should preferably be written in English.
+
+6. For long documentation comments that require formatting, use **Markdown syntax**. Do not use HTML tags inside comments.
+
+## Examples
+
+### Single-line comment
+
+// Calculate total price
+int total = price * count;
+
+### Documentation comment
+
+/// Returns the user by ID
+///
+/// @param id user identifier
+/// @return user entity
+User getUser(Long id);
+
+### Documentation comment with Markdown
+
+/// Returns repository information
+///
+/// **Features**
+/// - Supports pagination
+/// - Supports filtering
+/// - Supports sorting
+///
+/// @param query search query
+/// @return paginated result
+
+### Forbidden style
+
+/**
+ * Returns the user by ID
+ */
+User getUser(Long id);
+
+### Forbidden formatting
+
+/// <b>Repository information</b>
+/// <ul>
+///   <li>Pagination</li>
+///   <li>Filtering</li>
+/// </ul>

@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: entire-dashboard
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:entire-dashboard}?useUnicode=true&characterEncoding=utf8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+server:
+  port: 8080
+
+auth:
+  jwt:
+    issuer: entire-dashboard
+    secret: ${JWT_SECRET:ChangeThisSecretKeyInProduction}
+    access-token-ttl: 1800000      # 30 minutes
+    refresh-token-ttl: 2592000000  # 30 days
+
+app:
+  git:
+    data-path: ./data
+    default-branch: entire/checkpoints/v1
+    clone-depth: 1
+    timeout-seconds: 300
+    retry-count: 3
+  checkpoint:
+    sync:
+      enabled: true
+      cron: "0 */15 * * * ?"
+      branch: entire/checkpoints/v1
+      clone-depth: 0   # 0 = full history for commit walk
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  group-configs:
+    - group: admin
+      paths-to-match: /api/v1/admin/**
+    - group: open
+      paths-to-match: /api/v1/open/**

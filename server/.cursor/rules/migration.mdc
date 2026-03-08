@@ -1,0 +1,90 @@
+---
+globs: **/migration/*.sql
+alwaysApply: false
+---
+
+# Migration 数据库迁移脚本规范
+
+## 1. 目录结构
+
+* 业务代码的 Migration 脚本放置在：`src/main/resources/db/migration/` 目录下。
+* 单元测试的 Migration 脚本放置在：`src/test/resources/testdb/migration/` 目录下。
+
+## 2. 脚本文件命名规范
+
+* 命名格式：`V{YYYYMMDDHHIISS}__{Name}.sql`
+  * `YYYYMMDDHHIISS`：当前时间戳，精确到秒，应使用系统工具获取当前时间戳。`YYYY`表示年份，`MM`表示月份，`DD`表示日期，`HH`表示小时（24 小时制），`II`表示分钟，`SS`表示秒。
+  * `{Name}`：迁移名称，使用驼峰，首字母大写，例如：`CreateProjectTable`。
+* 命名：假设当前时间为`2025-11-15 14:52:33`，那么可以命名为：`V20251115145233__CreateProjectTable.sql`。
+
+## 3. 数据库与字符集规范
+
+* 当前项目数据库版本：**MySQL 8**。
+
+## 4. 表、字段书写规范
+
+### 4.1. 非空约束
+
+* 业务规则不允许为空的字段须声明为：`NOT NULL`。
+
+### 4.2. 正整数约束
+
+* 业务规则不允许为负数的整型字段必须声明为：INTEGER。
+
+### 4.3. 枚举字段
+
+* 对应 Entity 中的 Enum 字段，数据库中需定义为：`VARCHAR` 类型，并添加注释说明可选枚举值，枚举值大写，用下划线分隔多个单词。
+
+### 4.4. 非必填 ID 字段
+
+* 非必填 ID 字段的默认值应为 `NULL`，不要使用 `0`。
+
+## 5. 必要公共字段
+
+每张表必须包含如下字段：
+
+### 5.1. 主键 ID
+
+```sql
+id INTEGER NOT NULL
+```
+
+### 5.2. 创建时间
+
+```sql
+created_at INTEGER NOT NULL
+```
+
+### 5.3. 更新时间
+
+```sql
+updated_at INTEGER NOT NULL
+```
+
+### 5.4. 字段顺序：
+
+1. 第 1 个字段必须是 "id"；
+2. 最后两个字段必须是 "created_at"、"updated_at"；
+3. 其他业务字段置于中间。
+
+
+## 7. 表创建模板（推荐示例）
+
+```sql
+CREATE TABLE "user" (
+    "id" INTEGER NOT NULL PRIMARY KEY,
+    "username" VARCHAR(64) NOT NULL,
+    "email" VARCHAR(128) NOT NULL,
+    "status" VARCHAR(32) NOT NULL,
+    "created_at" INTEGER NOT NULL,
+    "updated_at" INTEGER NOT NULL,
+    UNIQUE ("email") -- 唯一约束
+);
+```
+
+## 8. Migration 脚本编写规范
+
+* 一个 Migration 脚本只做一件事（单一职责原则）。
+* 禁止在 Migration 中写依赖业务逻辑的数据，例如动态 ID、动态时间等。
+* 变更表结构必须使用 `ALTER TABLE`，不得使用 `DROP + CREATE` 替代。
+* 如需删除字段，优先采用软方式（废弃字段），再评估是否物理删除。

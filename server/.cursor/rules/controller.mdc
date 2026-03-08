@@ -1,0 +1,76 @@
+---
+globs: *Controller.java
+alwaysApply: false
+---
+
+# Controller 开发规范
+
+## 1. URL 命名
+
+采用 `/{service}/{method}` 的命名方式，命名使用小写字母，多个单词之间使用 "-" 隔开。
+
+示例：
+
+- 创建项目: `/repo/create`
+- 删除项目： `/repo/delete`
+- 获取一个项目： `/repo/get`
+- 根据 ID 列表列出项目：`/repo/list-by-ids`
+- 根据动态条件查询项目：`/repo/search`
+
+补充说明：
+
+- 方法名必须使用动词短语，表示动作，如：`create`, `delete`, `update-status`, `reset-password`。
+- 列表查询统一用：
+  - `list`：无筛选条件，例如 `/repo/list`
+  - `list-by-ids`：根据 ID 集合，例如`/repo/list-by-ids`
+- 搜索类接口统一使用：`search`：带条件的分页/列表查询，例如 `/repo/search`
+- URL 中不要出现与 HTTP 动词重复的词，如 `/repo/get-repo`（bad）。
+- URL 统一以服务名开头，例如 `/repo/...`。
+
+## 2. HTTP 动词
+
+仅使用`GET`、`POST`这两个 HTTP 动词。
+
+- `GET`： 用在查询类接口，不对数据变更；
+- `POST`: 用在新增、修改、删除、执行动作（有状态变更）。
+
+## 3. Controller 类注解
+
+按以下顺序添加注解：
+
+- (1). 组件 / 身份类（我是谁）： `@RestController`
+- (2). 构造器 / 注入类（我怎么被创建）：`@RequiredArgsConstructor`，且依赖的成员变量需添加 `final`；禁止使用 `@AllArgsConstructor`。
+- (3). 日志 / 技术辅助类（我有哪些能力）：`@Slf4j`...
+- (4). 路由 / 接口语义（我对外暴露什么）：`@RequestMapping`
+- (5). 文档 / 描述 / 排序类（我在文档中长什么样）：`@Tag`、`@ApiOrder`
+
+## 4. Controller 代码结构与方法顺序
+
+Controller 的方法顺序必须与对应 Service 中的方法顺序保持一致，即业务操作在前，查询类方法在后，这样有利于：
+
+- 便于查阅与维护；
+- 保持模块内逻辑结构一致；
+- 减轻代码 review 负担；
+
+## 5. Controller 与 Service 的调用关系规范
+
+- Controller 中的 `{service}/get` 类型的接口，调用对应 Service 的 `get` 接口。
+
+## 6. 异常与错误码规范
+
+- Controller 不处理业务异常，统一由全局异常处理器转换为标准 API 错误响应。
+
+## 7. 风格与规范性要求
+
+Controller 必须保持 瘦逻辑：
+
+- 不做复杂业务
+- 不做拼装或转换逻辑（使用 Mapper）
+- 不做条件判断业务（交给 Service）
+
+## 8. Swagger 注解规范
+
+- Controller 类需添加 `@Tag` 注解，用于标识 Controller 的名称和描述。
+- Controller 方法需添加 `@Operation` 注解，用于标识方法的名称和描述。
+- Controller 方法参数需添加 `@Parameter` 注解，用于标识参数的名称和描述。
+- Controller 类、以及方法需添加 `@ApiOrder` 注解，用于标识方法的顺序。
