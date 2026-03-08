@@ -79,7 +79,11 @@ cd server/
    DB_NAME=entire-dashboard
    DB_USERNAME=root
    DB_PASSWORD=your_password
+
    JWT_SECRET=ChangeThisSecretKeyInProduction
+
+   APP_USERNAME=admin
+   APP_PASSWORD=admin
    ```
 
 3. **Run the server**:
