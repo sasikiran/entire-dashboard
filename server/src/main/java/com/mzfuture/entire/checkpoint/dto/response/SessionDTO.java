@@ -69,7 +69,7 @@ public class SessionDTO {
     @Schema(description = "Attribution: agent percentage", example = "46.15")
     private BigDecimal agentPercentage;
 
-    @Schema(description = "Prompt preview for list (first line of prompt.txt)", example = "提供中英文两个版本的README")
+    @Schema(description = "Prompt preview for list (first line of prompt.txt)", example = "Provide both Chinese and English versions of README")
     private String promptPreview;
 
     @Schema(description = "Creation timestamp (Unix epoch ms)", example = "1704067200000")

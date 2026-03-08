@@ -3,48 +3,48 @@ package com.mzfuture.entire.gitsync.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-/// Git同步结果
+/// Git sync result
 @Data
-@Schema(description = "Git同步结果")
+@Schema(description = "Git sync result")
 public class GitSyncResult {
 
-    /// 同步状态: SUCCESS/FAILED
-    @Schema(description = "同步状态: SUCCESS/FAILED")
+    /// Sync status: SUCCESS/FAILED
+    @Schema(description = "Sync status: SUCCESS/FAILED")
     private String status;
 
-    /// 仓库ID
-    @Schema(description = "仓库ID")
+    /// Repository ID
+    @Schema(description = "Repository ID")
     private Long repoId;
 
-    /// 仓库名称
-    @Schema(description = "仓库名称")
+    /// Repository name
+    @Schema(description = "Repository name")
     private String repoName;
 
-    /// 存储路径
-    @Schema(description = "存储路径")
+    /// Storage path
+    @Schema(description = "Storage path")
     private String localPath;
 
-    /// 当前分支
-    @Schema(description = "当前分支")
+    /// Current branch
+    @Schema(description = "Current branch")
     private String branch;
 
-    /// 最新Commit ID
-    @Schema(description = "最新Commit ID")
+    /// Latest Commit ID
+    @Schema(description = "Latest Commit ID")
     private String commitId;
 
-    /// 最新Commit消息
-    @Schema(description = "最新Commit消息")
+    /// Latest Commit message
+    @Schema(description = "Latest Commit message")
     private String commitMessage;
 
-    /// 同步时间戳
-    @Schema(description = "同步时间戳")
+    /// Sync timestamp
+    @Schema(description = "Sync timestamp")
     private Long syncTime;
 
-    /// 是否有更新（仅pull时有效）
-    @Schema(description = "是否有更新")
+    /// Whether there is an update (only valid for pull)
+    @Schema(description = "Whether there is an update")
     private Boolean hasUpdate;
 
-    /// 错误信息，失败时返回
-    @Schema(description = "错误信息，失败时返回")
+    /// Error message, returned on failure
+    @Schema(description = "Error message, returned on failure")
     private String errorMessage;
 }

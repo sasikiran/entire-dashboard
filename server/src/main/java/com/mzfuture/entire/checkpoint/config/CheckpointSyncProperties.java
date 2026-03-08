@@ -18,7 +18,8 @@ public class CheckpointSyncProperties {
     /// Cron expression for scheduled sync (e.g. "0 */15 * * * ?" every 15 min)
     private String cron = "0 */15 * * * ?";
 
-    /// 仅存 checkpoint 元数据的分支名，不参与 commit 遍历；遍历的是除本分支外的所有其他分支 (default entire/checkpoints/v1)
+    /// Branch name that only stores checkpoint metadata, does not participate in commit traversal;
+    /// traverses all other branches except this one (default entire/checkpoints/v1)
     private String branch = "entire/checkpoints/v1";
 
     /// Clone depth for this branch only; 0 = full history, >0 = shallow (e.g. 500)

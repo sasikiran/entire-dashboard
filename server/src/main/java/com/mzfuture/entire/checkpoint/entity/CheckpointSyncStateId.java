@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
-/// 复合主键：(repo_id, branch)，用于按分支记录 checkpoint 增量同步状态
+/// Composite primary key: (repo_id, branch), used to record checkpoint incremental sync state by branch
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,9 +18,9 @@ public class CheckpointSyncStateId implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /// 仓库 ID（FK to repository.id）
+    /// Repository ID (FK to repository.id)
     private Long repoId;
 
-    /// 分支名（如 main、entire/checkpoints/v1 等）
+    /// Branch name (e.g. main, entire/checkpoints/v1, etc.)
     private String branch;
 }

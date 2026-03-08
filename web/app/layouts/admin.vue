@@ -21,7 +21,7 @@ const items: NavigationMenuItem[] = [
     label: 'Repositories',
     icon: 'i-lucide-folder-git',
     to: '/admin/gitrepos',
-    exact: false, // 允许子路径也匹配此菜单项
+    exact: false, // Allow sub-paths to also match this menu item
     onSelect: () => {
       if (import.meta.client && window.innerWidth < 1024) {
         open.value = false

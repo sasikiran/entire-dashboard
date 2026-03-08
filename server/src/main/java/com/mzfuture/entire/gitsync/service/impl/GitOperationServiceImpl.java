@@ -29,14 +29,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
-/// Git操作服务实现
+/// Git operation service implementation
 @Slf4j
 @Service
 public class GitOperationServiceImpl implements GitOperationService {
 
     private final GitProperties gitProperties;
 
-    // 仓库操作锁，防止并发操作同一仓库
+    // Repository operation lock, preventing concurrent operations on the same repository
     private final ConcurrentHashMap<Long, ReentrantLock> repoLocks = new ConcurrentHashMap<>();
 
     public GitOperationServiceImpl(GitProperties gitProperties) {
@@ -56,18 +56,18 @@ public class GitOperationServiceImpl implements GitOperationService {
             String localPath = getLocalRepositoryPath(repoId);
             File repoDir = new File(localPath);
 
-            // 如果目录已存在，先删除
+            // If directory already exists, delete first
             if (repoDir.exists()) {
                 FileUtil.del(repoDir);
             }
 
-            // 创建目录
+            // Create directory
             repoDir.mkdirs();
 
             int effectiveDepth = depth <= 0 ? gitProperties.getCloneDepth() : depth;
-            log.info("开始克隆仓库: repoId={}, branch={}, path={}, depth={}", repoId, branch, localPath, effectiveDepth);
+            log.info("Starting to clone repository: repoId={}, branch={}, path={}, depth={}", repoId, branch, localPath, effectiveDepth);
 
-            // 解析token用于认证
+            // Parse token for authentication
             CredentialsProvider credentials = parseCredentials(authUrl);
 
             CloneCommand clone = Git.cloneRepository()
@@ -86,12 +86,12 @@ public class GitOperationServiceImpl implements GitOperationService {
 
             clone.call();
 
-            log.info("仓库克隆成功: repoId={}, path={}", repoId, localPath);
+            log.info("Repository cloned successfully: repoId={}, path={}", repoId, localPath);
             return localPath;
 
         } catch (GitAPIException e) {
-            log.error("克隆仓库失败: repoId={}, error={}", repoId, e.getMessage(), e);
-            throw Errors.INTERNAL_ERROR.toException("克隆仓库失败: " + e.getMessage());
+            log.error("Failed to clone repository: repoId={}, error={}", repoId, e.getMessage(), e);
+            throw Errors.INTERNAL_ERROR.toException("Failed to clone repository: " + e.getMessage());
         } finally {
             lock.unlock();
         }
@@ -106,19 +106,19 @@ public class GitOperationServiceImpl implements GitOperationService {
             File repoDir = new File(localPath);
 
             if (!repoDir.exists()) {
-                throw Errors.INTERNAL_ERROR.toException("本地仓库不存在: " + localPath);
+                throw Errors.INTERNAL_ERROR.toException("Local repository does not exist: " + localPath);
             }
 
-            log.info("开始拉取仓库更新: repoId={}, branch={}", repoId, branch);
+            log.info("Starting to pull repository updates: repoId={}, branch={}", repoId, branch);
 
-            // 解析token用于认证
+            // Parse token for authentication
             CredentialsProvider credentials = parseCredentials(authUrl);
 
             try (Git git = Git.open(repoDir)) {
-                // 先检出目标分支
+                // First checkout target branch
                 git.checkout().setName(branch).call();
 
-                // 拉取更新
+                // Pull updates
                 PullCommand pull = git.pull()
                         .setRemoteBranchName(branch)
                         .setTimeout(gitProperties.getTimeoutSeconds());
@@ -129,13 +129,13 @@ public class GitOperationServiceImpl implements GitOperationService {
 
                 org.eclipse.jgit.api.PullResult pullResult = pull.call();
 
-                // 获取最新commit信息
+                // Get latest commit information
                 RevCommit latestCommit = getLatestCommit(git);
 
                 boolean hasUpdate = pullResult.getMergeResult() != null
                         && pullResult.getMergeResult().getMergeStatus().isSuccessful();
 
-                log.info("仓库拉取完成: repoId={}, hasUpdate={}", repoId, hasUpdate);
+                log.info("Repository pull completed: repoId={}, hasUpdate={}", repoId, hasUpdate);
 
                 return PullResult.builder()
                         .updated(hasUpdate)
@@ -147,8 +147,8 @@ public class GitOperationServiceImpl implements GitOperationService {
             }
 
         } catch (IOException | GitAPIException e) {
-            log.error("拉取仓库失败: repoId={}, error={}", repoId, e.getMessage(), e);
-            throw Errors.INTERNAL_ERROR.toException("拉取仓库失败: " + e.getMessage());
+            log.error("Failed to pull repository: repoId={}, error={}", repoId, e.getMessage(), e);
+            throw Errors.INTERNAL_ERROR.toException("Failed to pull repository: " + e.getMessage());
         } finally {
             lock.unlock();
         }
@@ -171,14 +171,14 @@ public class GitOperationServiceImpl implements GitOperationService {
         try (Git git = Git.open(repoDir)) {
             Repository repository = git.getRepository();
 
-            // 获取当前分支
+            // Get current branch
             Ref head = repository.exactRef("HEAD");
             if (head != null && head.isSymbolic()) {
                 String branchName = Repository.shortenRefName(head.getTarget().getName());
                 status.setCurrentBranch(branchName);
             }
 
-            // 获取最新commit
+            // Get latest commit
             RevCommit latestCommit = getLatestCommit(git);
             if (latestCommit != null) {
                 status.setCommitId(latestCommit.getName());
@@ -187,7 +187,7 @@ public class GitOperationServiceImpl implements GitOperationService {
             }
 
         } catch (IOException e) {
-            log.warn("获取仓库状态失败: repoId={}, error={}", repoId, e.getMessage());
+            log.warn("Failed to get repository status: repoId={}, error={}", repoId, e.getMessage());
         }
 
         return status;
@@ -204,7 +204,7 @@ public class GitOperationServiceImpl implements GitOperationService {
     @Override
     public String getLocalRepositoryPath(Long repoId) {
         String dataPath = gitProperties.getDataPath();
-        // 确保路径以/结尾
+        // Ensure path ends with /
         if (!dataPath.endsWith("/") && !dataPath.endsWith("\\")) {
             dataPath = dataPath + "/";
         }
@@ -223,7 +223,7 @@ public class GitOperationServiceImpl implements GitOperationService {
                 return true;
             }
 
-            log.info("删除本地仓库: repoId={}, path={}", repoId, localPath);
+            log.info("Deleting local repository: repoId={}, path={}", repoId, localPath);
             return FileUtil.del(repoDir);
 
         } finally {
@@ -242,7 +242,7 @@ public class GitOperationServiceImpl implements GitOperationService {
             String localPath = getLocalRepositoryPath(repoId);
             File repoDir = new File(localPath);
             if (!repoDir.exists() || !new File(repoDir, ".git").exists()) {
-                throw Errors.INTERNAL_ERROR.toException("本地仓库不存在: " + localPath);
+                throw Errors.INTERNAL_ERROR.toException("Local repository does not exist: " + localPath);
             }
             CredentialsProvider credentials = parseCredentials(authUrl);
             List<RefSpec> refSpecs = new ArrayList<>();
@@ -258,11 +258,11 @@ public class GitOperationServiceImpl implements GitOperationService {
                     fetch.setCredentialsProvider(credentials);
                 }
                 fetch.call();
-                log.info("fetch 分支完成: repoId={}, branches={}", repoId, branchNames.size());
+                log.info("Fetch branches completed: repoId={}, branches={}", repoId, branchNames.size());
             }
         } catch (IOException | GitAPIException e) {
-            log.error("fetch 分支失败: repoId={}, error={}", repoId, e.getMessage(), e);
-            throw Errors.INTERNAL_ERROR.toException("fetch 分支失败: " + e.getMessage());
+            log.error("Failed to fetch branches: repoId={}, error={}", repoId, e.getMessage(), e);
+            throw Errors.INTERNAL_ERROR.toException("Failed to fetch branches: " + e.getMessage());
         } finally {
             lock.unlock();
         }
@@ -285,40 +285,40 @@ public class GitOperationServiceImpl implements GitOperationService {
                     .sorted()
                     .collect(Collectors.toList());
         } catch (GitAPIException e) {
-            log.error("获取远程分支列表失败: error={}", e.getMessage(), e);
-            throw Errors.INTERNAL_ERROR.toException("获取远程分支列表失败: " + e.getMessage());
+            log.error("Failed to get remote branch list: error={}", e.getMessage(), e);
+            throw Errors.INTERNAL_ERROR.toException("Failed to get remote branch list: " + e.getMessage());
         }
     }
 
-    /// 获取仓库操作锁
+    /// Get repository operation lock
     private ReentrantLock getRepoLock(Long repoId) {
         return repoLocks.computeIfAbsent(repoId, k -> new ReentrantLock());
     }
 
-    /// 解析认证信息
+    /// Parse authentication information
     private CredentialsProvider parseCredentials(String authUrl) {
-        // 从URL中解析token
-        // 格式: https://oauth2:token@host/path 或 https://token@host/path
+        // Parse token from URL
+        // Format: https://oauth2:token@host/path or https://token@host/path
         try {
             java.net.URL url = new java.net.URL(authUrl);
             String userInfo = url.getUserInfo();
             if (userInfo != null && !userInfo.isEmpty()) {
                 String[] parts = userInfo.split(":");
                 if (parts.length >= 2) {
-                    // oauth2:token格式
+                    // oauth2:token format
                     return new UsernamePasswordCredentialsProvider(parts[0], parts[1]);
                 } else {
-                    // 只有token格式
+                    // Token-only format
                     return new UsernamePasswordCredentialsProvider(userInfo, "");
                 }
             }
         } catch (java.net.MalformedURLException e) {
-            log.warn("解析URL失败: {}", authUrl);
+            log.warn("Failed to parse URL: {}", authUrl);
         }
         return null;
     }
 
-    /// 获取最新commit
+    /// Get latest commit
     private RevCommit getLatestCommit(Git git) throws IOException {
         try {
             Iterable<RevCommit> commits = git.log().setMaxCount(1).call();
@@ -326,7 +326,7 @@ public class GitOperationServiceImpl implements GitOperationService {
                 return commit;
             }
         } catch (GitAPIException e) {
-            log.warn("获取最新commit失败: {}", e.getMessage());
+            log.warn("Failed to get latest commit: {}", e.getMessage());
         }
         return null;
     }

@@ -92,7 +92,7 @@ public class CheckpointSyncServiceImpl implements CheckpointSyncService {
             return;
         }
 
-        // 在 walk 内容分支前先将 metadata 分支拉取到最新，解析 checkpoint 时需从该分支读最新 metadata 文件
+        // Fetch metadata branch to latest before walking content branches, read latest metadata from this branch when parsing checkpoints
         try {
             gitSyncService.fetchMetadataBranch(repoId, metadataBranch);
         } catch (Exception e) {
@@ -115,7 +115,7 @@ public class CheckpointSyncServiceImpl implements CheckpointSyncService {
             return;
         }
 
-        // 按分支增量 walk：每分支使用自己的 lastProcessedCommitSha 作为 stopAtSha
+        // Incremental walk by branch: each branch uses its own lastProcessedCommitSha as stopAtSha
         List<CheckpointGitReader.CommitInfo> allCommits = new ArrayList<>();
         for (String branchName : contentBranches) {
             String stopAtSha = fullScan ? null : getLastProcessedCommitSha(repoId, branchName);
@@ -152,7 +152,7 @@ public class CheckpointSyncServiceImpl implements CheckpointSyncService {
             upsertSessionsForCheckpoint(repoId, metadataRevision, metaJson, savedCheckpoint.getId());
         }
 
-        // 一致性：全部成功后再按分支更新 state（事务内，任一步失败则整体回滚）
+        // Consistency: update state by branch only after all success (within transaction, any step failure rolls back entirely)
         long now = System.currentTimeMillis();
         for (String branchName : contentBranches) {
             String headSha = gitReader.resolveBranchCommitSha(repoId, branchName).orElse(null);
@@ -160,7 +160,7 @@ public class CheckpointSyncServiceImpl implements CheckpointSyncService {
                 updateSyncStateSuccess(repoId, branchName, headSha, now);
             }
         }
-        // 更新 repository 表最后成功同步时间
+        // Update repository table last successful sync time
         repo.setLastSuccessfulSyncAt(now);
         repoRepository.save(repo);
         log.info("Checkpoint sync done: repoId={}, contentBranches={}, processed={}", repoId, contentBranches.size(), allCommits.size());

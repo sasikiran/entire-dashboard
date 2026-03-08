@@ -78,7 +78,7 @@ public class RepoServiceImpl implements RepoService {
             throw Errors.INTERNAL_ERROR.toException("Repository not found, ID: " + id);
         }
 
-        // 删除本地代码仓库
+        // Delete local code repository
         try {
             boolean deleted = gitOperationService.deleteRepository(id);
             if (deleted) {

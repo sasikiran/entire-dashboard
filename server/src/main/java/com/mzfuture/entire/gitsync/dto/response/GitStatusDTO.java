@@ -3,36 +3,36 @@ package com.mzfuture.entire.gitsync.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-/// 仓库状态信息
+/// Repository status information
 @Data
-@Schema(description = "仓库状态信息")
+@Schema(description = "Repository status information")
 public class GitStatusDTO {
 
-    /// 仓库ID
-    @Schema(description = "仓库ID")
+    /// Repository ID
+    @Schema(description = "Repository ID")
     private Long repoId;
 
-    /// 本地仓库是否存在
-    @Schema(description = "本地仓库是否存在")
+    /// Whether local repository exists
+    @Schema(description = "Whether local repository exists")
     private Boolean exists;
 
-    /// 本地存储路径
-    @Schema(description = "本地存储路径")
+    /// Local storage path
+    @Schema(description = "Local storage path")
     private String localPath;
 
-    /// 当前分支
-    @Schema(description = "当前分支")
+    /// Current branch
+    @Schema(description = "Current branch")
     private String currentBranch;
 
-    /// 最新Commit ID
-    @Schema(description = "最新Commit ID")
+    /// Latest Commit ID
+    @Schema(description = "Latest Commit ID")
     private String commitId;
 
-    /// 最新Commit消息
-    @Schema(description = "最新Commit消息")
+    /// Latest Commit message
+    @Schema(description = "Latest Commit message")
     private String commitMessage;
 
-    /// 最后提交时间
-    @Schema(description = "最后提交时间")
+    /// Last commit time
+    @Schema(description = "Last commit time")
     private Long lastCommitTime;
 }

@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/// Token 校验结果
+/// Token validation result
 @Data
 @Builder
 @NoArgsConstructor

@@ -15,63 +15,63 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-/// Git仓库同步控制器
+/// Git repository sync controller
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/admin/repo")
-@Tag(name = "Repository Sync", description = "仓库代码同步API")
+@Tag(name = "Repository Sync", description = "Repository code sync API")
 public class GitSyncController {
 
     private final GitSyncService gitSyncService;
     private final GitOperationService gitOperationService;
 
-    /// 同步仓库代码（根据webUrl和accessToken）
+    /// Sync repository code (based on webUrl and accessToken)
     ///
-    /// @param params 同步参数
-    /// @return 同步结果
+    /// @param params sync parameters
+    /// @return sync result
     @PostMapping("/sync")
-    @Operation(summary = "同步仓库代码", description = "根据webUrl和accessToken同步指定分支代码到本地")
+    @Operation(summary = "Sync repository code", description = "Sync specified branch code to local based on webUrl and accessToken")
     public GitSyncResult sync(@RequestBody @Valid GitSyncParams params) {
         return gitSyncService.syncRepository(params);
     }
 
-    /// 根据仓库ID同步（使用存储的配置）
+    /// Sync by repository ID (using stored configuration)
     ///
-    /// @param repoId 仓库ID
-    /// @return 同步结果
+    /// @param repoId repository ID
+    /// @return sync result
     @PostMapping("/sync/{repoId}")
-    @Operation(summary = "根据ID同步仓库", description = "使用数据库中存储的仓库配置进行同步")
+    @Operation(summary = "Sync repository by ID", description = "Sync using repository configuration stored in database")
     public GitSyncResult syncById(@PathVariable Long repoId) {
         return gitSyncService.syncRepositoryById(repoId);
     }
 
-    /// 获取仓库同步状态
+    /// Get repository sync status
     ///
-    /// @param repoId 仓库ID
-    /// @return 仓库状态信息
+    /// @param repoId repository ID
+    /// @return repository status information
     @GetMapping("/sync/status/{repoId}")
-    @Operation(summary = "获取仓库同步状态", description = "检查本地仓库是否存在及当前状态")
+    @Operation(summary = "Get repository sync status", description = "Check if local repository exists and current status")
     public GitStatusDTO getSyncStatus(@PathVariable Long repoId) {
         return gitOperationService.getRepositoryStatus(repoId);
     }
 
-    /// 获取仓库所有分支列表
+    /// Get all branches of repository
     ///
-    /// @param repoId 仓库ID
-    /// @return 分支列表信息
+    /// @param repoId repository ID
+    /// @return branch list information
     @GetMapping("/branches/{repoId}")
-    @Operation(summary = "获取仓库分支列表", description = "获取指定仓库的所有远程分支名称列表")
+    @Operation(summary = "Get repository branches", description = "Get all remote branch names for specified repository")
     public GitBranchesDTO getBranches(@PathVariable Long repoId) {
         return gitSyncService.getBranches(repoId);
     }
 
-    /// 校验访问令牌有效性（调用各平台 API）
+    /// Validate access token validity (calls platform API)
     ///
-    /// @param params webUrl、platform、accessToken
-    /// @return 校验结果
+    /// @param params webUrl, platform, accessToken
+    /// @return validation result
     @PostMapping("/validate-token")
-    @Operation(summary = "校验 Token", description = "调用平台 API 校验访问令牌是否有效")
+    @Operation(summary = "Validate Token", description = "Call platform API to validate if access token is valid")
     public TokenValidateResult validateToken(@RequestBody @Valid TokenValidateParams params) {
         return gitSyncService.validateToken(params);
     }

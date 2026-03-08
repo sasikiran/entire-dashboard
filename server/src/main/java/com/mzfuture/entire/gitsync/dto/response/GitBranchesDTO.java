@@ -5,16 +5,16 @@ import lombok.Data;
 
 import java.util.List;
 
-/// 仓库分支列表信息
+/// Repository branch list information
 @Data
-@Schema(description = "仓库分支列表信息")
+@Schema(description = "Repository branch list information")
 public class GitBranchesDTO {
 
-    /// 仓库ID
-    @Schema(description = "仓库ID")
+    /// Repository ID
+    @Schema(description = "Repository ID")
     private Long repoId;
 
-    /// 分支名称列表
-    @Schema(description = "分支名称列表")
+    /// Branch name list
+    @Schema(description = "Branch name list")
     private List<String> branches;
 }

@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-/// 按 (repo_id, branch) 记录增量同步状态；仅内容分支参与 walk，每条分支独立 lastProcessedCommitSha。
+/// Record incremental sync state by (repo_id, branch); only content branches participate in walk, each branch has independent lastProcessedCommitSha.
 @Getter
 @Setter
 @Entity
@@ -16,27 +16,27 @@ import lombok.Setter;
 @IdClass(CheckpointSyncStateId.class)
 public class CheckpointSyncState {
 
-    /// 仓库 ID（PK，FK to repository.id）
+    /// Repository ID (PK, FK to repository.id)
     @Id
     private Long repoId;
 
-    /// 分支名（PK），如 main
+    /// Branch name (PK), e.g., main
     @Id
     private String branch;
 
-    /// 该分支上已处理到的最新 commit SHA；null 表示该分支尚未同步过
+    /// Latest processed commit SHA on this branch; null means this branch has never been synced
     private String lastProcessedCommitSha;
 
-    /// 该分支最后一次成功同步完成时间（Unix 毫秒）
+    /// Last successful sync completion time for this branch (Unix milliseconds)
     private Long lastSyncAt;
 
-    /// 最后一次同步失败时的错误信息
+    /// Error message from last sync failure
     @Column(length = 512)
     private String lastError;
 
-    /// 创建时间（Unix 毫秒）
+    /// Creation timestamp (Unix milliseconds)
     private Long createdAt;
 
-    /// 更新时间（Unix 毫秒）
+    /// Update timestamp (Unix milliseconds)
     private Long updatedAt;
 }

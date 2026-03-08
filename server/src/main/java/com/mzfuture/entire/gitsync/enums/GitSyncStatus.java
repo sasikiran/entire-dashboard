@@ -1,11 +1,11 @@
 package com.mzfuture.entire.gitsync.enums;
 
-/// Git同步状态枚举
+/// Git sync status enum
 public enum GitSyncStatus {
 
-    /// 同步成功
+    /// Sync success
     SUCCESS,
 
-    /// 同步失败
+    /// Sync failed
     FAILED
 }

@@ -46,7 +46,7 @@ public class CheckpointGitReader {
         this.gitOperationService = gitOperationService;
     }
 
-    /// 用工作区目录打开仓库，显式 setGitDir(.git) + setWorkTree(repoDir)，避免 create(repoDir) 被当成 bare 导致 resolve() 对 packed-refs 返回 null。
+    /// Open repository with working directory, explicitly setGitDir(.git) + setWorkTree(repoDir) to prevent create(repoDir) from being treated as bare, which would cause resolve() to return null for packed-refs.
     private static Repository openRepository(File repoDir) throws IOException {
         File gitDir = new File(repoDir, ".git");
         if (gitDir.isDirectory()) {

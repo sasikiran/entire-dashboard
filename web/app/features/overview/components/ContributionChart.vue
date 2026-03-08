@@ -10,7 +10,7 @@
     </template>
 
     <p v-if="chartDataTruncated" class="text-sm text-amber-600 dark:text-amber-500 mb-2">
-      仅展示最近 500 条
+      Showing last 500 records only
     </p>
 
     <!-- Empty state: no date range and no data -->

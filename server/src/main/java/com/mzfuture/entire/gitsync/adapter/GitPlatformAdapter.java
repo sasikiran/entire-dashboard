@@ -2,34 +2,34 @@ package com.mzfuture.entire.gitsync.adapter;
 
 import com.mzfuture.entire.gitrepo.enums.RepositoryPlatform;
 
-/// Git平台适配器接口
-/// 支持不同Git平台的URL构建和认证方式
+/// Git platform adapter interface
+/// Supports URL building and authentication methods for different Git platforms
 public interface GitPlatformAdapter {
 
-    /// 获取支持的平台类型
+    /// Get the supported platform type
     ///
-    /// @return 平台类型枚举
+    /// @return platform type enum
     RepositoryPlatform getPlatform();
 
-    /// 构建带认证的Git URL
+    /// Build Git URL with authentication
     ///
-    /// @param webUrl 原始Web URL
-    /// @param accessToken 访问令牌
-    /// @return 带认证的URL
+    /// @param webUrl original Web URL
+    /// @param accessToken access token
+    /// @return URL with authentication
     String buildAuthUrl(String webUrl, String accessToken);
 
-    /// 构建仓库 Web 界面的单条 commit 查看 URL
+    /// Build single commit view URL for repository Web interface
     ///
-    /// @param webUrl 仓库 Web URL（支持带 .git 后缀，会先规范化）
+    /// @param webUrl repository Web URL (supports .git suffix, will be normalized first)
     /// @param commitSha commit SHA
-    /// @return 可点击跳转的 commit 详情页 URL，参数无效时返回 null
+    /// @return clickable commit detail page URL, returns null if parameters are invalid
     String buildCommitUrl(String webUrl, String commitSha);
 
-    /// 验证token有效性（可选实现）
+    /// Validate token validity (optional implementation)
     ///
-    /// @param webUrl 仓库URL
-    /// @param accessToken 访问令牌
-    /// @return token是否有效
+    /// @param webUrl repository URL
+    /// @param accessToken access token
+    /// @return whether token is valid
     default boolean validateToken(String webUrl, String accessToken) {
         return true;
     }

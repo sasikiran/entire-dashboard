@@ -11,7 +11,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-/// GitLab 平台适配器实现（含自建实例，域名从 webUrl 解析）
+/// GitLab platform adapter implementation (including self-hosted instances, domain parsed from webUrl)
 @Slf4j
 @Component
 public class GitlabAdapter implements GitPlatformAdapter {
@@ -32,12 +32,12 @@ public class GitlabAdapter implements GitPlatformAdapter {
 
     @Override
     public String buildAuthUrl(String webUrl, String accessToken) {
-        // GitLab 格式: https://oauth2:{token}@{host}/{path}.git
+        // GitLab format: https://oauth2:{token}@{host}/{path}.git
         try {
             URI uri = URI.create(webUrl);
             String host = uri.getHost();
             if (host == null || host.isEmpty()) {
-                throw Errors.INVALID_ARGUMENT.toException("无效的URL格式: " + webUrl);
+                throw Errors.INVALID_ARGUMENT.toException("Invalid URL format: " + webUrl);
             }
             String path = uri.getPath();
             if (path == null || path.isEmpty()) {
@@ -49,7 +49,7 @@ public class GitlabAdapter implements GitPlatformAdapter {
             path = path.replaceAll("/+$", "");
             return String.format("https://oauth2:%s@%s%s.git", accessToken, host, path.isEmpty() ? "/" : path);
         } catch (Exception e) {
-            throw Errors.INVALID_ARGUMENT.toException("无效的URL格式: " + webUrl);
+            throw Errors.INVALID_ARGUMENT.toException("Invalid URL format: " + webUrl);
         }
     }
 

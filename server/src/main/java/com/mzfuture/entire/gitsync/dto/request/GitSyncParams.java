@@ -4,21 +4,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-/// Git仓库同步请求参数
+/// Git repository sync request parameters
 @Data
-@Schema(description = "Git仓库同步请求参数")
+@Schema(description = "Git repository sync request parameters")
 public class GitSyncParams {
 
-    /// 仓库WebURL
-    @NotBlank(message = "仓库WebURL不能为空")
-    @Schema(description = "仓库WebURL", requiredMode = Schema.RequiredMode.REQUIRED)
+    /// Repository Web URL
+    @NotBlank(message = "Repository Web URL cannot be empty")
+    @Schema(description = "Repository Web URL", requiredMode = Schema.RequiredMode.REQUIRED)
     private String webUrl;
 
-    /// 访问令牌，为空则使用仓库配置的token
-    @Schema(description = "访问令牌，为空则使用仓库配置的token")
+    /// Access token, uses repository configured token if empty
+    @Schema(description = "Access token, uses repository configured token if empty")
     private String accessToken;
 
-    /// 指定分支，默认entire/checkpoints/v1
-    @Schema(description = "指定分支，默认entire/checkpoints/v1")
+    /// Specified branch, default entire/checkpoints/v1
+    @Schema(description = "Specified branch, default entire/checkpoints/v1")
     private String branch;
 }

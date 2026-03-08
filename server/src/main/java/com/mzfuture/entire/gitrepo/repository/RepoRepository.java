@@ -13,9 +13,9 @@ public interface RepoRepository extends JpaRepository<Repo, Long>, QuerydslPredi
 
     boolean existsByNameAndIdNot(String name, Long id);
 
-    /// 根据WebURL查找仓库
+    /// Find repository by Web URL
     ///
-    /// @param webUrl 仓库WebURL
-    /// @return 仓库实体Optional
+    /// @param webUrl Repository Web URL
+    /// @return Repository entity Optional
     Optional<Repo> findByWebUrl(String webUrl);
 }

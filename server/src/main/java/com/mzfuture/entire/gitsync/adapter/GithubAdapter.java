@@ -11,7 +11,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-/// GitHub 平台适配器实现
+/// GitHub platform adapter implementation
 @Slf4j
 @Component
 public class GithubAdapter implements GitPlatformAdapter {
@@ -25,7 +25,7 @@ public class GithubAdapter implements GitPlatformAdapter {
 
     @Override
     public String buildAuthUrl(String webUrl, String accessToken) {
-        // GitHub 格式: https://{token}@{host}/{path}.git
+        // GitHub format: https://{token}@{host}/{path}.git
         return GitUrlUtils.buildTokenInUserInfoUrl(webUrl, accessToken);
     }
 

@@ -3,8 +3,8 @@ package com.mzfuture.entire.gitsync.adapter;
 import com.mzfuture.entire.gitrepo.enums.RepositoryPlatform;
 import org.springframework.stereotype.Component;
 
-/// Gitea 平台适配器实现（含自托管实例）
-/// Gitea 与 GitHub 使用相同的 Git 认证格式和 Web commit URL 格式
+/// Gitea platform adapter implementation (including self-hosted instances)
+/// Gitea uses the same Git authentication format and Web commit URL format as GitHub
 @Component
 public class GiteaAdapter implements GitPlatformAdapter {
 

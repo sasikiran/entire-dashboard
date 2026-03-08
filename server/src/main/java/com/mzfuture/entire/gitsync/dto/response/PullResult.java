@@ -3,23 +3,23 @@ package com.mzfuture.entire.gitsync.dto.response;
 import lombok.Builder;
 import lombok.Data;
 
-/// Pull操作结果
+/// Pull operation result
 @Data
 @Builder
 public class PullResult {
 
-    /// 是否有更新
+    /// Whether there is an update
     private boolean updated;
 
     /// Commit ID
     private String commitId;
 
-    /// Commit消息
+    /// Commit message
     private String commitMessage;
 
-    /// Commit作者
+    /// Commit author
     private String author;
 
-    /// Commit时间
+    /// Commit time
     private Long commitTime;
 }

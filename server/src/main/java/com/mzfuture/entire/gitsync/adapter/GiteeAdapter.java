@@ -15,8 +15,8 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
-/// Gitee 平台适配器实现（含企业版，域名从 webUrl 解析）
-/// Gitee Git over HTTPS 需要 username:token 格式，需通过 API 获取当前用户 login
+/// Gitee platform adapter implementation (including enterprise edition, domain parsed from webUrl)
+/// Gitee Git over HTTPS requires username:token format, need to fetch current user login via API
 @Slf4j
 @Component
 public class GiteeAdapter implements GitPlatformAdapter {
@@ -39,7 +39,7 @@ public class GiteeAdapter implements GitPlatformAdapter {
 
     @Override
     public String buildAuthUrl(String webUrl, String accessToken) {
-        // Gitee Git 认证需要 username:token 格式，通过 /user API 获取当前用户 login
+        // Gitee Git authentication requires username:token format, fetch current user login via /user API
         String username = fetchGiteeUsername(webUrl, accessToken);
         return GitUrlUtils.buildUsernameTokenUrl(webUrl, username, accessToken);
     }
@@ -74,7 +74,7 @@ public class GiteeAdapter implements GitPlatformAdapter {
         return GitUrlUtils.getApiBaseFromWebUrl(webUrl, "/api/v5");
     }
 
-    /// 通过 Gitee API 获取当前用户 login（token 所属账户的用户名）
+    /// Fetch current user login via Gitee API (username of the token owner account)
     private String fetchGiteeUsername(String webUrl, String accessToken) {
         try {
             String apiBase = getApiBaseFromWebUrl(webUrl);
@@ -91,20 +91,20 @@ public class GiteeAdapter implements GitPlatformAdapter {
                     .send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() != 200) {
-                throw Errors.INTERNAL_ERROR.toException("Gitee API 返回 " + response.statusCode() + "，无法获取用户信息");
+                throw Errors.INTERNAL_ERROR.toException("Gitee API returned " + response.statusCode() + ", cannot get user info");
             }
 
             JsonNode root = OBJECT_MAPPER.readTree(response.body());
             JsonNode login = root.get("login");
             if (login == null || !login.isTextual()) {
-                throw Errors.INTERNAL_ERROR.toException("Gitee 用户信息中缺少 login 字段");
+                throw Errors.INTERNAL_ERROR.toException("Gitee user info missing login field");
             }
             return login.asText();
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            log.error("获取 Gitee 用户名失败: {}", e.getMessage());
-            throw Errors.INTERNAL_ERROR.toException("获取 Gitee 用户名失败: " + e.getMessage());
+            log.error("Failed to get Gitee username: {}", e.getMessage());
+            throw Errors.INTERNAL_ERROR.toException("Failed to get Gitee username: " + e.getMessage());
         }
     }
 }

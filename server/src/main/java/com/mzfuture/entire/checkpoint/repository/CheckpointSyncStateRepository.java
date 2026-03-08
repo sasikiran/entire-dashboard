@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-/// 按 (repo_id, branch) 查询 checkpoint 增量同步状态
+/// Query checkpoint incremental sync state by (repo_id, branch)
 public interface CheckpointSyncStateRepository extends JpaRepository<CheckpointSyncState, CheckpointSyncStateId> {
 
     Optional<CheckpointSyncState> findByRepoIdAndBranch(Long repoId, String branch);

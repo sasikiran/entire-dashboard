@@ -3,69 +3,69 @@ package com.mzfuture.entire.gitsync.service;
 import com.mzfuture.entire.gitsync.dto.response.GitStatusDTO;
 import com.mzfuture.entire.gitsync.dto.response.PullResult;
 
-/// Git操作服务接口
-/// 提供基础的Git操作功能（clone、pull、status等）
+/// Git operation service interface
+/// Provides basic Git operation functions (clone, pull, status, etc.)
 public interface GitOperationService {
 
-    /// 克隆仓库（单分支浅克隆）
+    /// Clone repository (single branch shallow clone)
     ///
-    /// @param repoId 仓库ID
-    /// @param authUrl 带认证的URL
-    /// @param branch 分支名
-    /// @return 本地仓库路径
+    /// @param repoId Repository ID
+    /// @param authUrl URL with authentication
+    /// @param branch Branch name
+    /// @return Local repository path
     String cloneRepository(Long repoId, String authUrl, String branch);
 
-    /// 克隆仓库（可指定深度，depth<=0 表示使用全局默认深度）
+    /// Clone repository (depth can be specified, depth<=0 means use global default depth)
     ///
-    /// @param repoId 仓库ID
-    /// @param authUrl 带认证的URL
-    /// @param branch 分支名
-    /// @param depth 克隆深度，0=全量，>0=浅克隆深度
-    /// @return 本地仓库路径
+    /// @param repoId Repository ID
+    /// @param authUrl URL with authentication
+    /// @param branch Branch name
+    /// @param depth Clone depth, 0=full, >0=shallow clone depth
+    /// @return Local repository path
     String cloneRepository(Long repoId, String authUrl, String branch, int depth);
 
-    /// 拉取最新代码
+    /// Pull latest code
     ///
-    /// @param repoId 仓库ID
-    /// @param authUrl 带认证的URL
-    /// @param branch 分支名
-    /// @return Pull操作结果
+    /// @param repoId Repository ID
+    /// @param authUrl URL with authentication
+    /// @param branch Branch name
+    /// @return Pull operation result
     PullResult pullRepository(Long repoId, String authUrl, String branch);
 
-    /// 获取仓库当前状态
+    /// Get repository current status
     ///
-    /// @param repoId 仓库ID
-    /// @return 仓库状态信息
+    /// @param repoId Repository ID
+    /// @return Repository status information
     GitStatusDTO getRepositoryStatus(Long repoId);
 
-    /// 检查本地仓库是否存在
+    /// Check if local repository exists
     ///
-    /// @param repoId 仓库ID
-    /// @return 是否存在
+    /// @param repoId Repository ID
+    /// @return Whether exists
     boolean isRepositoryExists(Long repoId);
 
-    /// 获取本地仓库路径
+    /// Get local repository path
     ///
-    /// @param repoId 仓库ID
-    /// @return 本地路径
+    /// @param repoId Repository ID
+    /// @return Local path
     String getLocalRepositoryPath(Long repoId);
 
-    /// 删除本地仓库
+    /// Delete local repository
     ///
-    /// @param repoId 仓库ID
-    /// @return 是否成功删除
+    /// @param repoId Repository ID
+    /// @return Whether successfully deleted
     boolean deleteRepository(Long repoId);
 
-    /// 获取远程仓库所有分支名称
+    /// Get all branch names from remote repository
     ///
-    /// @param authUrl 带认证的URL
-    /// @return 分支名称列表
+    /// @param authUrl URL with authentication
+    /// @return List of branch names
     java.util.List<String> listRemoteBranches(String authUrl);
 
-    /// 在已有本地仓库上 fetch 指定分支（不切换 checkout），用于 checkpoint 多分支同步
+    /// Fetch specified branches on existing local repository (without checkout switch), used for checkpoint multi-branch sync
     ///
-    /// @param repoId 仓库ID
-    /// @param authUrl 带认证的URL
-    /// @param branchNames 要 fetch 的分支名列表
+    /// @param repoId Repository ID
+    /// @param authUrl URL with authentication
+    /// @param branchNames List of branch names to fetch
     void fetchBranches(Long repoId, String authUrl, java.util.List<String> branchNames);
 }

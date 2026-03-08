@@ -23,6 +23,6 @@ public class Repo extends BaseEntity {
 
     private String accessToken;
 
-    /// 最后成功 checkpoint 同步时间（Unix 毫秒），null 表示从未同步
+    /// Last successful checkpoint sync time (Unix milliseconds), null means never synced
     private Long lastSuccessfulSyncAt;
 }
