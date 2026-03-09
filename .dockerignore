@@ -1,0 +1,37 @@
+# Git & IDE
+.git
+.gitignore
+.cursor
+.idea
+*.md
+
+# frontend 
+web/node_modules
+web/.output
+web/.nuxt
+web/.cache
+
+# backend 
+server/.gradle
+server/build
+
+# data & logs 
+data
+logs
+
+# env
+.env
+.env.*
+!.env.dist
+
+# Docker 
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# test & doc
+**/*.test.*
+**/*.spec.*
+**/__tests__
+**/test/**
+**/docs/**
