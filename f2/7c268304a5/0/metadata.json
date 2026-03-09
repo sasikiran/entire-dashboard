@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "f27c268304a5",
+  "session_id": "15737e7c-cf50-4725-a794-444b30d36a27",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-09T17:23:26.015707Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "README.md"
+  ],
+  "agent": "Cursor",
+  "model": "default",
+  "turn_id": "5495d4ab00c8",
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-09T17:23:26.014363Z",
+    "agent_lines": 11,
+    "human_added": 2,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 13,
+    "agent_percentage": 84.61538461538461
+  }
+}
