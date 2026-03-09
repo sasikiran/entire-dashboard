@@ -3,7 +3,7 @@
   "checkpoint_id": "f27c268304a5",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 2,
+  "checkpoints_count": 4,
   "files_touched": [
     "README.md",
     "docker/nginx.conf"
@@ -19,6 +19,12 @@
       "metadata": "/f2/7c268304a5/1/metadata.json",
       "transcript": "/f2/7c268304a5/1/full.jsonl",
       "content_hash": "/f2/7c268304a5/1/content_hash.txt",
+      "prompt": ""
+    },
+    {
+      "metadata": "/f2/7c268304a5/2/metadata.json",
+      "transcript": "/f2/7c268304a5/2/full.jsonl",
+      "content_hash": "/f2/7c268304a5/2/content_hash.txt",
       "prompt": ""
     }
   ],
