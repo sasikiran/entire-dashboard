@@ -9,6 +9,11 @@
     <!-- Table + Pagination -->
     <template v-else>
       <UTable :data="listData" :columns="columns" class="flex-1" />
+      <CheckpointDetailSlideover
+        ref="detailSlideoverRef"
+        v-model:open="detailSlideoverOpen"
+        :checkpoint="selectedCheckpoint"
+      />
 
       <div class="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700">
         <div class="text-sm text-default">Total {{ total }} items</div>
@@ -28,6 +33,7 @@
 
 <script setup lang="tsx">
 import { UButton, UDropdownMenu } from '#components'
+import CheckpointDetailSlideover from './CheckpointDetailSlideover.vue'
 import type { DropdownMenuItem } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import type { CheckpointDTO } from '../types/checkpoint.types'
@@ -37,6 +43,15 @@ import { openExternal } from '~/shared/utils/browser'
 import { useAgentColors } from '~/features/overview/composables/useAgentColors'
 
 const { getAgentBadgeStyle } = useAgentColors()
+
+const detailSlideoverRef = ref<InstanceType<typeof CheckpointDetailSlideover> | null>(null)
+const detailSlideoverOpen = ref(false)
+const selectedCheckpoint = ref<CheckpointDTO | null>(null)
+
+function openCheckpointDetail(checkpoint: CheckpointDTO) {
+  selectedCheckpoint.value = checkpoint
+  detailSlideoverOpen.value = true
+}
 
 function formatCommitMessage(msg?: string | null): string {
   if (!msg) return '-'
@@ -84,9 +99,14 @@ const columns = [
     accessorKey: 'commitMessage',
     header: 'Commit Message',
     cell: ({ row }: { row: Row<CheckpointDTO> }) => (
-      <div class="max-w-[280px]" title={row.original.commitMessage}>
-        <span class="truncate block text-default">{formatCommitMessage(row.original.commitMessage)}</span>
-      </div>
+      <button
+        type="button"
+        class="group max-w-[280px] w-full text-left inline-flex items-center gap-1.5 px-1.5 py-0.5 -mx-1.5 -my-0.5 rounded hover:bg-primary/10 transition-colors"
+        title="点击查看详情"
+        onClick={() => openCheckpointDetail(row.original)}
+      >
+        <span class="truncate block text-primary hover:underline font-medium">{formatCommitMessage(row.original.commitMessage)}</span>
+      </button>
     ),
   },
   {
@@ -175,7 +195,12 @@ function getRowMenuItems(row: Row<CheckpointDTO>): DropdownMenuItem[] {
   return [
     { type: 'label', label: 'Actions' },
     {
-      label: 'View in repository',
+      label: 'View details',
+      icon: 'i-lucide-panel-right-open',
+      onSelect: () => openCheckpointDetail(row.original),
+    },
+    {
+      label: 'View in git repository',
       icon: 'i-lucide-external-link',
       disabled: !row.original.commitUrl,
       onSelect: () => {
