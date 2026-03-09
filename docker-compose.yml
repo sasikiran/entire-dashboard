@@ -12,7 +12,7 @@ services:
       - --default-authentication-plugin=mysql_native_password
       - --max_connections=50
     ports:
-      - "3309:3306"
+      - "3381:3306"
     volumes:
       - ./data/mysql:/var/lib/mysql
     restart: unless-stopped
@@ -26,10 +26,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: entire-dashboard:0.1.0
+    image: ghcr.io/sunmh207/ entire-dashboard:0.1.0
     container_name: entire-dashboard
     ports:
-      - "1080:80"
+      - "81:80"
     environment:
       DB_HOST: mysql
       DB_PORT: "3306"
