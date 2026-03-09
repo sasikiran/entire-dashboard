@@ -8,6 +8,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.CompletableFuture;
+
 /// Scheduled job: sync checkpoints for all repos (incremental commit walk).
 /// Runs once at startup (ApplicationReadyEvent) and then on cron schedule.
 @Slf4j
@@ -26,7 +28,7 @@ public class CheckpointSyncJob {
     /** Run once when application is ready (after context and beans are initialized). */
     @EventListener(ApplicationReadyEvent.class)
     public void runOnStartup() {
-        run();
+        CompletableFuture.runAsync(this::run);
     }
 
     @Scheduled(cron = "${app.checkpoint.sync.cron:0 */15 * * * ?}")
