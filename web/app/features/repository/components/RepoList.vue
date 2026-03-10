@@ -87,7 +87,16 @@ const columns = [
   },
   {
     accessorKey: 'lastSuccessfulSyncAt',
-    header: 'Last Synced',
+    header: () => (
+      <div class="inline-flex items-center gap-1">
+        <span>Last Synced</span>
+        <UTooltip text="The system automatically syncs every 15 minutes">
+          <span class="inline-flex cursor-help">
+            <UIcon name="i-lucide-info" class="w-4 h-4 text-muted" />
+          </span>
+        </UTooltip>
+      </div>
+    ),
     cell: ({ row }: { row: Row<RepoRowVO> }) => {
       const ts = row.original.lastSuccessfulSyncAt
       const isStale = !ts || Date.now() - ts > ONE_DAY_MS
