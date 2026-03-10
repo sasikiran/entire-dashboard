@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "af3908b40e79",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "README.md",
+    "README.zh-CN.md",
+    "docs/imgs/snapshot_sessions.png"
+  ],
+  "sessions": [
+    {
+      "metadata": "/af/3908b40e79/0/metadata.json",
+      "transcript": "/af/3908b40e79/0/full.jsonl",
+      "content_hash": "/af/3908b40e79/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 1475,
+    "cache_creation_tokens": 14169,
+    "cache_read_tokens": 35621,
+    "output_tokens": 1253,
+    "api_call_count": 4
+  }
+}
