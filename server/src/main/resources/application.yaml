@@ -27,7 +27,7 @@ app:
     username: ${APP_USERNAME:admin}
     password: ${APP_PASSWORD:admin}
   git:
-    data-path: ./data
+    data-path: ./data/projects
     default-branch: entire/checkpoints/v1
     clone-depth: 1
     timeout-seconds: 300
