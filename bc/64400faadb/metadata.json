@@ -3,7 +3,7 @@
   "checkpoint_id": "bc64400faadb",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 8,
+  "checkpoints_count": 10,
   "files_touched": [
     "run-local.sh",
     "server/src/main/java/com/mzfuture/entire/gitrepo/dto/request/RepoCreateParams.java",
@@ -32,13 +32,19 @@
       "transcript": "/bc/64400faadb/1/full.jsonl",
       "content_hash": "/bc/64400faadb/1/content_hash.txt",
       "prompt": "/bc/64400faadb/1/prompt.txt"
+    },
+    {
+      "metadata": "/bc/64400faadb/2/metadata.json",
+      "transcript": "/bc/64400faadb/2/full.jsonl",
+      "content_hash": "/bc/64400faadb/2/content_hash.txt",
+      "prompt": "/bc/64400faadb/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 232171,
+    "input_tokens": 301344,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 2694016,
-    "output_tokens": 21627,
-    "api_call_count": 84
+    "cache_read_tokens": 3826176,
+    "output_tokens": 30831,
+    "api_call_count": 128
   }
 }

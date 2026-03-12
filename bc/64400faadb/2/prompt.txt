@@ -1,0 +1,13 @@
+how do i run this project locally? i don't want to run it via docker
+
+---
+
+sure, please go ahead and build + run it
+
+---
+
+yes
+
+---
+
+yes, please
