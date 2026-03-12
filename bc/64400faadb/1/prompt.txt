@@ -1,0 +1,25 @@
+In Create Repository screen, it asks me to provide an existing GitHub or GitLab repo url to fetch the details. Is it possible for me to locally add a repo too like the one on my file system? Rest of the functionality should be same i.e., visualizing Opencode conversations etc.
+
+---
+
+If I run self hosted local GitLab, does this app still support it? Does it work with self-signed certificates with GitLab, like the one that our org uses?
+
+---
+
+Let us add local git repo support and sync as a separate tab in the same create repository view
+
+---
+
+okay, no need. can you rebuild and run the app?
+
+---
+
+no, this is not run via docker
+
+---
+
+use local.sh files
+
+---
+
+run it using local .sh files
