@@ -1,0 +1,9 @@
+for some reason when i am running run-local.sh the frontend is not getting accessible on 3001 port. previously it worked. can you check why? i have run-local.sh and stop-local.sh files to manage the app and i dont want to run it via docker
+
+---
+
+actually, you installed openjdk@25 in a previous session for me and the app worked correctly. you installed jdk along with mysql
+
+---
+
+can you add https://github.com/sasikiran/entire-dashboard as a new remote and push the code to it?

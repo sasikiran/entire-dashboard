@@ -1,0 +1,44 @@
+{
+  "cli_version": "0.5.0",
+  "checkpoint_id": "bc64400faadb",
+  "session_id": "ses_31fe8ab0cffea0oZdQua2b74Yl",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-12T03:49:17.490259Z",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "run-local.sh",
+    "server/src/main/java/com/mzfuture/entire/gitrepo/dto/request/RepoCreateParams.java",
+    "server/src/main/java/com/mzfuture/entire/gitrepo/dto/request/RepoUpdateParams.java",
+    "server/src/main/java/com/mzfuture/entire/gitrepo/enums/RepositoryPlatform.java",
+    "server/src/main/java/com/mzfuture/entire/gitrepo/repository/RepoRepository.java",
+    "server/src/main/java/com/mzfuture/entire/gitrepo/service/impl/RepoServiceImpl.java",
+    "server/src/main/java/com/mzfuture/entire/gitsync/service/impl/GitSyncServiceImpl.java",
+    "web/app/features/repository/components/RepoCreateSlideover.vue",
+    "web/app/features/repository/components/RepoEditSlideover.vue",
+    "web/app/features/repository/components/RepoList.vue",
+    "web/app/features/repository/constants/repo.constants.ts",
+    "web/app/features/repository/schemas/repo.schema.ts"
+  ],
+  "agent": "OpenCode",
+  "turn_id": "53dfa8865a2c",
+  "token_usage": {
+    "input_tokens": 54011,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 407040,
+    "output_tokens": 6770,
+    "api_call_count": 30
+  },
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-12T03:49:17.400237Z",
+    "agent_lines": 309,
+    "human_added": 65,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 374,
+    "agent_percentage": 82.62032085561498
+  }
+}
