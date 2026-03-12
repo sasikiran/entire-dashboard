@@ -17,7 +17,20 @@ const loading = ref(false)
 const validatingToken = ref(false)
 const showAccessToken = ref(false)
 
+const isLocalRepo = computed(() => state.platform === 'LOCAL')
+
+function isRemoteHttpUrl(value: string) {
+  return /^https?:\/\/.+/i.test(value)
+}
+
+function isAbsolutePath(value: string) {
+  return value.startsWith('/') || /^[A-Za-z]:[\\/]/.test(value)
+}
+
 async function handleValidateToken() {
+  if (isLocalRepo.value) {
+    return
+  }
   if (!state.webUrl || !state.platform || !state.accessToken) {
     toast.add({
       title: 'Validation failed',
@@ -74,6 +87,26 @@ function openEdit(repo: RepoRowVO) {
 
 async function onSubmit(event: FormSubmitEvent<RepoUpdateParams>) {
   if (loading.value) return
+
+  if (event.data.platform === 'LOCAL') {
+    event.data.accessToken = ''
+    if (!isAbsolutePath(event.data.webUrl)) {
+      toast.add({
+        title: 'Invalid local path',
+        description: 'Please enter an absolute local repository path',
+        color: 'error',
+      })
+      return
+    }
+  } else if (!isRemoteHttpUrl(event.data.webUrl)) {
+    toast.add({
+      title: 'Invalid URL',
+      description: 'Please enter a valid remote repository URL (http/https)',
+      color: 'error',
+    })
+    return
+  }
+
   loading.value = true
 
   try {
@@ -129,15 +162,19 @@ defineExpose({
           <UInput v-model="state.name" placeholder="Enter repository name" size="md" class="w-full" />
         </UFormField>
 
-        <UFormField label="Web URL" name="webUrl" :ui="{ label: 'text-sm font-normal mb-1' }">
-          <UInput v-model="state.webUrl" placeholder="https://github.com/user/repo" class="w-full" />
+        <UFormField :label="isLocalRepo ? 'Local Path' : 'Web URL'" name="webUrl" :ui="{ label: 'text-sm font-normal mb-1' }">
+          <UInput
+            v-model="state.webUrl"
+            :placeholder="isLocalRepo ? '/Users/name/projects/repo' : 'https://github.com/user/repo'"
+            class="w-full"
+          />
         </UFormField>
 
         <UFormField label="Platform" name="platform" :ui="{ label: 'text-sm font-normal mb-1' }">
           <USelect v-model="state.platform" :items="PLATFORM_OPTIONS" placeholder="Select platform" />
         </UFormField>
 
-        <UFormField label="Access Token" name="accessToken" :ui="{ label: 'text-sm font-normal mb-1' }">
+        <UFormField v-if="!isLocalRepo" label="Access Token" name="accessToken" :ui="{ label: 'text-sm font-normal mb-1' }">
           <div class="flex gap-2">
             <div class="relative flex-1">
               <UInput

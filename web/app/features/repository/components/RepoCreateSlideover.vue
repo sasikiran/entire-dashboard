@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { repoApi } from '../api/repo.api'
 import type { FormSubmitEvent } from '#ui/types'
-import { PLATFORM_OPTIONS } from '../constants/repo.constants'
+import { REMOTE_PLATFORM_OPTIONS } from '../constants/repo.constants'
 import { repoFormSchema } from '../schemas/repo.schema'
 import type { RepoCreateParams, RepoDTO } from '~/features/repository/types/repoDTO'
 
@@ -15,9 +15,37 @@ const formRef = ref()
 const loading = ref(false)
 const validatingToken = ref(false)
 const submitMode = ref<'confirm' | 'saveAndContinue'>('confirm')
+const sourceTab = ref<'remote' | 'local'>('remote')
 const showAccessToken = ref(false)
 
+const sourceTabItems = [
+  { key: 'remote' as const, label: 'Remote Git' },
+  { key: 'local' as const, label: 'Local Git' },
+]
+
+const isLocalTab = computed(() => sourceTab.value === 'local')
+
+watch(sourceTab, (tab) => {
+  if (tab === 'local') {
+    state.platform = 'LOCAL'
+    state.accessToken = ''
+  } else if (state.platform === 'LOCAL') {
+    state.platform = 'GITLAB'
+  }
+})
+
+function isRemoteHttpUrl(value: string) {
+  return /^https?:\/\/.+/i.test(value)
+}
+
+function isAbsolutePath(value: string) {
+  return value.startsWith('/') || /^[A-Za-z]:[\\/]/.test(value)
+}
+
 async function handleValidateToken() {
+  if (isLocalTab.value) {
+    return
+  }
   if (!state.webUrl || !state.platform || !state.accessToken) {
     toast.add({
       title: 'Validation failed',
@@ -62,6 +90,27 @@ const { open, state, resetForm } = useModalForm<RepoCreateParams>({
 
 async function onSubmit(event: FormSubmitEvent<RepoCreateParams>) {
   if (loading.value) return
+
+  if (isLocalTab.value) {
+    event.data.platform = 'LOCAL'
+    event.data.accessToken = ''
+    if (!isAbsolutePath(event.data.webUrl)) {
+      toast.add({
+        title: 'Invalid local path',
+        description: 'Please enter an absolute local repository path',
+        color: 'error',
+      })
+      return
+    }
+  } else if (!isRemoteHttpUrl(event.data.webUrl)) {
+    toast.add({
+      title: 'Invalid URL',
+      description: 'Please enter a valid remote repository URL (http/https)',
+      color: 'error',
+    })
+    return
+  }
+
   loading.value = true
 
   try {
@@ -71,9 +120,13 @@ async function onSubmit(event: FormSubmitEvent<RepoCreateParams>) {
     if (submitMode.value === 'saveAndContinue') {
       state.name = ''
       state.webUrl = ''
+      if (isLocalTab.value) {
+        state.accessToken = ''
+      }
       emit('ok', repo)
     } else {
       resetForm()
+      sourceTab.value = 'remote'
       open.value = false
       emit('ok', repo)
     }
@@ -106,6 +159,19 @@ async function onSubmit(event: FormSubmitEvent<RepoCreateParams>) {
     </template>
 
     <template #body>
+      <div class="mb-4 inline-flex rounded-lg bg-elevated p-1">
+        <button
+          v-for="item in sourceTabItems"
+          :key="item.key"
+          type="button"
+          class="px-3 py-1.5 text-sm rounded-md transition-colors"
+          :class="sourceTab === item.key ? 'bg-default text-highlighted shadow-sm' : 'text-muted hover:text-default'"
+          @click="sourceTab = item.key"
+        >
+          {{ item.label }}
+        </button>
+      </div>
+
       <UForm
         ref="formRef"
         :state="state"
@@ -118,15 +184,19 @@ async function onSubmit(event: FormSubmitEvent<RepoCreateParams>) {
           <UInput v-model="state.name" placeholder="Enter repository name" size="md" class="w-full" />
         </UFormField>
 
-        <UFormField label="Web URL" name="webUrl" :ui="{ label: 'text-sm font-normal mb-1' }">
-          <UInput v-model="state.webUrl" placeholder="https://github.com/user/repo" class="w-full" />
+        <UFormField :label="isLocalTab ? 'Local Path' : 'Web URL'" name="webUrl" :ui="{ label: 'text-sm font-normal mb-1' }">
+          <UInput
+            v-model="state.webUrl"
+            :placeholder="isLocalTab ? '/Users/name/projects/repo' : 'https://github.com/user/repo'"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField label="Platform" name="platform" :ui="{ label: 'text-sm font-normal mb-1' }">
-          <USelect v-model="state.platform" :items="PLATFORM_OPTIONS" placeholder="Select platform" />
+        <UFormField v-if="!isLocalTab" label="Platform" name="platform" :ui="{ label: 'text-sm font-normal mb-1' }">
+          <USelect v-model="state.platform" :items="REMOTE_PLATFORM_OPTIONS" placeholder="Select platform" />
         </UFormField>
 
-        <UFormField label="Access Token" name="accessToken" :ui="{ label: 'text-sm font-normal mb-1' }">
+        <UFormField v-if="!isLocalTab" label="Access Token" name="accessToken" :ui="{ label: 'text-sm font-normal mb-1' }">
           <div class="flex gap-2">
             <div class="relative flex-1">
               <UInput

@@ -19,9 +19,8 @@ public class RepoUpdateParams {
     @Schema(description = "Repository name", requiredMode = Schema.RequiredMode.REQUIRED, example = "my-repository")
     private String name;
 
-    @NotBlank(message = "Website URL cannot be empty")
-    @org.hibernate.validator.constraints.URL(message = "Website URL format is invalid")
-    @Schema(description = "Website URL", requiredMode = Schema.RequiredMode.REQUIRED, example = "https://github.com/user/repo")
+    @NotBlank(message = "Repository URL or local path cannot be empty")
+    @Schema(description = "Repository web URL or local path", requiredMode = Schema.RequiredMode.REQUIRED, example = "https://github.com/user/repo")
     private String webUrl;
 
     @NotNull(message = "Platform cannot be null")

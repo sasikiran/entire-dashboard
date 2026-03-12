@@ -83,9 +83,11 @@ public class GitSyncServiceImpl implements GitSyncService {
             throw Errors.INTERNAL_ERROR.toException("Unsupported platform type: " + platform);
         }
 
+        boolean tokenRequired = platform != RepositoryPlatform.LOCAL;
+
         // Prefer token from request, otherwise use token from database
         String accessToken = StrUtil.isNotBlank(requestToken) ? requestToken : repo.getAccessToken();
-        if (StrUtil.isBlank(accessToken)) {
+        if (tokenRequired && StrUtil.isBlank(accessToken)) {
             throw Errors.INTERNAL_ERROR.toException("Access token cannot be empty");
         }
 
@@ -191,7 +193,8 @@ public class GitSyncServiceImpl implements GitSyncService {
             throw Errors.INTERNAL_ERROR.toException("Unsupported platform type: " + repo.getPlatform());
         }
 
-        if (StrUtil.isBlank(repo.getAccessToken())) {
+        boolean tokenRequired = repo.getPlatform() != RepositoryPlatform.LOCAL;
+        if (tokenRequired && StrUtil.isBlank(repo.getAccessToken())) {
             throw Errors.INTERNAL_ERROR.toException("Access token cannot be empty");
         }
 
@@ -213,7 +216,8 @@ public class GitSyncServiceImpl implements GitSyncService {
         if (adapter == null) {
             throw Errors.INTERNAL_ERROR.toException("Unsupported platform type: " + repo.getPlatform());
         }
-        if (StrUtil.isBlank(repo.getAccessToken())) {
+        boolean tokenRequired = repo.getPlatform() != RepositoryPlatform.LOCAL;
+        if (tokenRequired && StrUtil.isBlank(repo.getAccessToken())) {
             throw Errors.INTERNAL_ERROR.toException("Access token cannot be empty");
         }
         String authUrl = adapter.buildAuthUrl(repo.getWebUrl(), repo.getAccessToken());
@@ -267,7 +271,8 @@ public class GitSyncServiceImpl implements GitSyncService {
         if (adapter == null) {
             throw Errors.INTERNAL_ERROR.toException("Unsupported platform type: " + repo.getPlatform());
         }
-        if (StrUtil.isBlank(repo.getAccessToken())) {
+        boolean tokenRequired = repo.getPlatform() != RepositoryPlatform.LOCAL;
+        if (tokenRequired && StrUtil.isBlank(repo.getAccessToken())) {
             throw Errors.INTERNAL_ERROR.toException("Access token cannot be empty");
         }
         String authUrl = adapter.buildAuthUrl(repo.getWebUrl(), repo.getAccessToken());
@@ -277,6 +282,9 @@ public class GitSyncServiceImpl implements GitSyncService {
 
     @Override
     public TokenValidateResult validateToken(TokenValidateParams params) {
+        if (params.getPlatform() == RepositoryPlatform.LOCAL) {
+            return TokenValidateResult.ok();
+        }
         GitPlatformAdapter adapter = platformAdapters.get(params.getPlatform());
         if (adapter == null) {
             return TokenValidateResult.fail("Unsupported platform type: " + params.getPlatform());

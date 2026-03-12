@@ -4,5 +4,6 @@ public enum RepositoryPlatform {
     GITHUB,
     GITLAB,
     GITEE,
-    GITEA
+    GITEA,
+    LOCAL
 }

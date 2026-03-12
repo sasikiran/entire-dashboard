@@ -13,7 +13,7 @@ export const repoFormSchema = v.object({
   ),
   webUrl: v.pipe(
     v.string('Web URL must be a string'),
-    v.url('Please enter a valid URL'),
+    v.minLength(1, 'Web URL or local path is required'),
   ),
   platform: v.pipe(
     v.string('Platform must be a string'),

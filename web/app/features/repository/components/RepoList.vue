@@ -38,6 +38,7 @@ const platformMap: Record<string, string> = {
   GITLAB: 'GitLab',
   GITEE: 'Gitee',
   GITEA: 'Gitea',
+  LOCAL: 'Local',
 }
 
 const columns = [
@@ -56,14 +57,19 @@ const columns = [
     accessorKey: 'webUrl',
     header: 'URL',
     cell: ({ row }: { row: Row<RepoRowVO> }) => {
+      const value = row.original.webUrl
+      const isLink = /^https?:\/\//i.test(value)
+      if (!isLink) {
+        return <div class="truncate max-w-[380px] block" title={value}>{value}</div>
+      }
       return (
         <a
-          href={row.original.webUrl}
+          href={value}
           target="_blank"
           class="text-primary hover:underline truncate max-w-[380px] block"
-          title={row.original.webUrl}
+          title={value}
         >
-          {row.original.webUrl}
+          {value}
         </a>
       )
     },

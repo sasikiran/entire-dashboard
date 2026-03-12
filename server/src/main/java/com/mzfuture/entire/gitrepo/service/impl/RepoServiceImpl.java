@@ -7,6 +7,7 @@ import com.mzfuture.entire.gitrepo.dto.request.RepoSearchParams;
 import com.mzfuture.entire.gitrepo.dto.request.RepoUpdateParams;
 import com.mzfuture.entire.gitrepo.entity.QRepo;
 import com.mzfuture.entire.gitrepo.entity.Repo;
+import com.mzfuture.entire.gitrepo.enums.RepositoryPlatform;
 import com.mzfuture.entire.gitrepo.mapper.RepoMapper;
 import com.mzfuture.entire.gitrepo.repository.RepoRepository;
 import com.mzfuture.entire.gitrepo.service.RepoService;
@@ -18,6 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.net.URI;
 
 @Log4j2
 @Service
@@ -37,6 +41,7 @@ public class RepoServiceImpl implements RepoService {
 
 @Override
     public RepoDTO create(RepoCreateParams params) {
+        validateRepoAddress(params.getPlatform(), params.getWebUrl());
         if (repoRepository.existsByName(params.getName())) {
             throw Errors.INTERNAL_ERROR.toException("Repository name already exists: " + params.getName());
         }
@@ -50,11 +55,15 @@ public class RepoServiceImpl implements RepoService {
 
     @Override
     public RepoDTO update(RepoUpdateParams params) {
+        validateRepoAddress(params.getPlatform(), params.getWebUrl());
         Repo repo = repoRepository.findById(params.getId())
                 .orElseThrow(() -> Errors.NOT_FOUND.toException("Repository not found, id: " + params.getId()));
 
         if (repoRepository.existsByNameAndIdNot(params.getName(), params.getId())) {
             throw Errors.INTERNAL_ERROR.toException("Repository name already exists: " + params.getName());
+        }
+        if (repoRepository.existsByWebUrlAndIdNot(params.getWebUrl(), params.getId())) {
+            throw Errors.INTERNAL_ERROR.toException("Repository Web URL already exists: " + params.getWebUrl());
         }
         repoMapper.updateEntity(params, repo);
 
@@ -108,5 +117,52 @@ public class RepoServiceImpl implements RepoService {
         var repos = repoRepository.findAll(b, pageable);
         var rows = repoMapper.toRows(repos.toList());
         return new PageImpl<>(rows, pageable, repos.getTotalElements());
+    }
+
+    private void validateRepoAddress(RepositoryPlatform platform, String webUrl) {
+        if (platform == RepositoryPlatform.LOCAL) {
+            validateLocalPath(webUrl);
+            return;
+        }
+
+        if (!isValidHttpUrl(webUrl)) {
+            throw Errors.INVALID_ARGUMENT.toException("Repository URL format is invalid: " + webUrl);
+        }
+    }
+
+    private void validateLocalPath(String path) {
+        if (StrUtil.isBlank(path)) {
+            throw Errors.INVALID_ARGUMENT.toException("Local repository path cannot be empty");
+        }
+
+        File repoDir = new File(path);
+        if (!repoDir.isAbsolute()) {
+            throw Errors.INVALID_ARGUMENT.toException("Local repository path must be absolute: " + path);
+        }
+        if (!repoDir.exists() || !repoDir.isDirectory()) {
+            throw Errors.INVALID_ARGUMENT.toException("Local repository path does not exist: " + path);
+        }
+
+        File dotGit = new File(repoDir, ".git");
+        File bareHead = new File(repoDir, "HEAD");
+        File bareObjects = new File(repoDir, "objects");
+        boolean isStandardRepo = dotGit.exists() && dotGit.isDirectory();
+        boolean isBareRepo = bareHead.exists() && bareHead.isFile() && bareObjects.exists() && bareObjects.isDirectory();
+
+        if (!isStandardRepo && !isBareRepo) {
+            throw Errors.INVALID_ARGUMENT.toException("Local path is not a Git repository: " + path);
+        }
+    }
+
+    private boolean isValidHttpUrl(String webUrl) {
+        try {
+            URI uri = URI.create(webUrl);
+            String scheme = uri.getScheme();
+            String host = uri.getHost();
+            return ("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme))
+                    && StrUtil.isNotBlank(host);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

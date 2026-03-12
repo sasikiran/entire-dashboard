@@ -13,6 +13,8 @@ public interface RepoRepository extends JpaRepository<Repo, Long>, QuerydslPredi
 
     boolean existsByNameAndIdNot(String name, Long id);
 
+    boolean existsByWebUrlAndIdNot(String webUrl, Long id);
+
     /// Find repository by Web URL
     ///
     /// @param webUrl Repository Web URL
